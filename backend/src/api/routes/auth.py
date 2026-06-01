@@ -1,25 +1,28 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.domain.models.models import User, UserRole
+from src.infra.db.database import get_db
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 import uuid
 
 router = APIRouter()
 
-# Mock user for development
-MOCK_USER = User(
-    id=uuid.uuid4(),
-    email="admin@agentbridge.ai",
-    full_name="Admin User",
-    role=UserRole.ADMIN,
-    tenant_id=uuid.uuid4()
-)
-
-async def get_current_user():
-    # Placeholder for actual OAuth2 logic
-    return MOCK_USER
+async def get_current_user(db: AsyncSession = Depends(get_db)):
+    # In a real app, this would validate a JWT token
+    # For simulation, we return the first user in the DB
+    result = await db.execute(select(User).limit(1))
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+        )
+    return user
 
 @router.post("/login")
 async def login():
-    return {"access_token": "mock_token", "token_type": "bearer"}
+    return {"access_token": "simulated_jwt_token", "token_type": "bearer"}
 
 @router.get("/me")
 async def get_me(user: User = Depends(get_current_user)):

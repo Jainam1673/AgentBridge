@@ -3,19 +3,28 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, CheckCircle2, Info } from "lucide-react";
 
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { AlertCircle, CheckCircle2, Info } from "lucide-react";
+import { useTenantsReadiness } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
 export default function DataReadinessPage() {
-  const readinessMetrics = [
-    { label: "Data Freshness", score: 92, status: "Healthy", description: "All sources synced within the last 24h" },
-    { label: "Schema Integrity", score: 85, status: "Warning", description: "3 tables missing primary key definitions" },
-    { label: "Metadata Completeness", score: 64, status: "Critical", description: "High volume of documents missing 'Owner' tag" },
-    { label: "Redundancy Rate", score: 98, status: "Healthy", description: "Less than 1% duplicate records detected" },
-  ];
+  const { data: tenants, isLoading } = useTenantsReadiness();
 
   const recommendations = [
     { type: "Critical", text: "Populate missing 'Owner' and 'ProjectID' metadata for 1,240 documents in Google Drive." },
     { type: "Medium", text: "Map GitHub issue labels to Jira priority levels for consistent cross-system reporting." },
     { type: "Low", text: "Enable incremental sync for the PostgreSQL 'archive' schema." },
   ];
+
+  if (isLoading) {
+    return <div className="p-8"><Skeleton className="h-64 w-full" /></div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -24,23 +33,40 @@ export default function DataReadinessPage() {
         <p className="text-muted-foreground">Identifying and resolving data blockers for enterprise-grade AI deployment.</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {readinessMetrics.map((m) => (
-          <Card key={m.label}>
-            <CardHeader className="pb-2">
-              <CardDescription className="flex items-center justify-between">
-                {m.label}
-                {m.status === "Healthy" ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <AlertCircle className="h-4 w-4 text-amber-500" />}
-              </CardDescription>
-              <CardTitle className="text-2xl">{m.score}%</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Progress value={m.score} className="h-2 mb-2" />
-              <p className="text-xs text-muted-foreground">{m.description}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Tenant Readiness Scores</CardTitle>
+          <CardDescription>Live assessment of tenant data ecosystems</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Tenant</TableHead>
+                <TableHead>AI Readiness Score</TableHead>
+                <TableHead>Freshness</TableHead>
+                <TableHead>Completeness</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {tenants?.map((tenant: any) => (
+                <TableRow key={tenant.name}>
+                  <TableCell className="font-medium">{tenant.name}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Progress value={tenant.score} className="h-2 w-24" />
+                      <span>{tenant.score}%</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{tenant.freshness}</TableCell>
+                  <TableCell>{tenant.completeness}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+...
 
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">

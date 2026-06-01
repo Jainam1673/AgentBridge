@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from src.api.routes import health, auth
+from src.api.routes import health, auth, analytics
 from src.observability.setup import setup_opentelemetry
 
 app = FastAPI(
@@ -25,6 +25,7 @@ app.add_middleware(
 # Include routes
 app.include_router(health.router, prefix="/health", tags=["Health"])
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(analytics.router, prefix="/analytics", tags=["Analytics"])
 
 @app.get("/")
 async def root():
