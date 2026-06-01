@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Acme Manufacturing",
+    "domain": "acme.com",
+    "use_case": "Inventory & Supply Chain Optimization",
+    "connectors": ["google_drive", "github", "postgresql"],
+    "docs_count": 1200
+  },
+  {
+    "name": "Globex Finance",
+    "domain": "globex.com",
+    "use_case": "Risk Assessment & Fraud Detection",
+    "connectors": ["google_drive", "jira", "postgresql"],
+    "docs_count": 2500
+  },
+  {
+    "name": "HealthCorp",
+    "domain": "healthcorp.org",
+    "use_case": "Patient Record Management & Compliance",
+    "connectors": ["google_drive", "postgresql"],
+    "docs_count": 800
+  }
+]

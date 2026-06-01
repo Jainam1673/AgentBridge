@@ -1,0 +1,25 @@
+# Common
+.DS_Store
+*.log
+.env
+.env.local
+
+# Backend (Python/uv)
+backend/.venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.mypy_cache/
+backend/.pytest_cache/
+backend/.ruff_cache/
+
+# Frontend (Next.js/Bun)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.cache/
+frontend/bun.lockb
+
+# Infrastructure
+infra/.terraform/
+infra/*.tfstate*
+infra/*.tfvars
