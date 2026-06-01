@@ -1,134 +1,126 @@
 # AgentBridge: Enterprise GenAI Deployment Platform
 
+> **Architecting the Connective Tissue between Frontier AI and Production Reality.**
+
 [![GCP Native](https://img.shields.io/badge/GCP-Native-4285F4?logo=google-cloud&logoColor=white)](https://cloud.google.com/)
 [![Multi-Agent](https://img.shields.io/badge/Agentic-LangGraph-FF6F61?logo=langchain)](https://langchain-ai.github.io/langgraph/)
 [![Python 3.13+](https://img.shields.io/badge/Python-3.13+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Production Hardened](https://img.shields.io/badge/Production-Hardened-success)](https://github.com/Jainam1673/AgentBridge)
 
-AgentBridge is a production-grade, Google Cloud-native platform designed to bridge the gap between disconnected enterprise infrastructure (Google Drive, GitHub, Jira, PostgreSQL) and multi-agent AI systems.
+---
 
-**Inspired by the role of a Google Cloud Forward Deployed Engineer (GenAI)**, this platform demonstrates how organizations can deploy, evaluate, secure, and observe agentic workflows at enterprise scale.
+## 🎯 Executive Summary
+AgentBridge is a high-fidelity deployment platform designed for the **Google Cloud Forward Deployed Engineer (GenAI)** persona. It solves the "Last Mile" problem of enterprise AI by transforming disconnected data silos (Google Drive, GitHub, Jira, PostgreSQL) into a production-hardened, multi-agent ecosystem. 
+
+Unlike toy demos, AgentBridge manages the **auxiliary practical concerns**—data readiness, circuit-broken tool execution, granular cost-tracing, and self-reflecting agent loops—required to move GenAI from "cool prototype" to "enterprise ROI."
 
 ---
 
 ## 🚀 Key Value Propositions
 
-- **Multi-Agent Orchestration:** Specialized agents (Planner, Knowledge, Data, Action, Critic) coordinated via **LangGraph** to handle complex, non-linear workflows.
-- **Production Hardening:** Advanced resiliency patterns including **Circuit Breakers** and **Exponential Backoff** retries for tool execution.
-- **Granular LLM Observability:** Real-time tracking of **Tokens/sec**, **TTFT (Time-to-First-Token)**, and **Token-based Cost Estimation**.
-- **Data Readiness Assessment:** A proprietary engine that identifies "data blockers" (schema integrity, metadata gaps) before AI deployment.
-- **Enterprise Connectivity:** Native **MCP (Model Context Protocol)** servers for secure, tool-based access to corporate data silos.
+### 🧠 Hierarchical Multi-Agent Orchestration
+Leveraging **LangGraph**, AgentBridge employs a specialized agent collective:
+- **Planner:** State-aware task decomposition.
+- **Knowledge Agent:** Multi-hop RAG across Vector Stores and BigQuery.
+- **Action Agent:** Side-effect execution via MCP servers.
+- **Critic Agent:** Self-reflection loop for groundedness and safety validation.
+
+### 🛡 Production-Grade "Connective Tissue"
+- **Resiliency Patterns:** Native implementation of **Circuit Breakers** and **Exponential Backoff** to protect legacy customer infrastructure during agentic tool-calling.
+- **Secure Tooling (MCP):** Implementation of the **Model Context Protocol** for isolated, auditable, and tool-based system access.
+- **Enterprise Auth:** RBAC-enforced workflows integrated with Google OAuth 2.0.
+
+### 📊 AI Readiness & Observability
+- **Data Readiness Engine:** A diagnostic ML layer that identifies "blockers" (metadata gaps, stale docs, schema drift) before deployment.
+- **Granular LLM Metrics:** Real-time tracking of **Tokens/sec**, **TTFT (Time-to-First-Token)**, and **Token-based Cost Estimation** per session.
+- **Full-Stack Tracing:** OpenTelemetry-instrumented request lifecycles exported to GCP Cloud Trace.
 
 ---
 
-## 🏛 Architecture Overview
+## 🏛 Technical Architecture
 
-AgentBridge follows a **Clean Architecture** pattern, separating domain logic from infrastructure and presentation.
+### System Flow
+```mermaid
+graph TD
+    User((User)) --> NextJS[Next.js Dashboard]
+    NextJS --> FastAPI[FastAPI Gateway]
+    FastAPI --> LangGraph{LangGraph Orchestrator}
+    
+    LangGraph --> Planner[Planner Agent]
+    LangGraph --> Knowledge[Knowledge Agent]
+    LangGraph --> Action[Action Agent]
+    LangGraph --> Critic[Critic Agent]
+    
+    Knowledge --> VertexAI[Vertex AI Embedding/Search]
+    Knowledge --> BigQuery[(BigQuery DW)]
+    
+    Action --> MCP[MCP Servers]
+    MCP --> GDrive[Google Drive]
+    MCP --> Jira[Jira/GitHub]
+    MCP --> Postgres[(PostgreSQL)]
+    
+    Critic --> Eval[Evaluation Engine]
+    Eval --> BigQuery
+```
 
-### High-Level Stack
-| Layer | Technologies |
-| :--- | :--- |
-| **Backend** | Python 3.13+, FastAPI, SQLAlchemy 2.0 (Async), Pydantic v2, `uv` |
-| **Orchestration** | LangGraph, LangChain, Redis (State/Checkpointing) |
-| **Frontend** | Next.js 16 (App Router), TypeScript, Bun, Tailwind CSS, shadcn/ui |
-| **Machine Learning** | PyTorch (Neural Networks), XGBoost (Classification), Vertex AI |
-| **GCP Services** | BigQuery (DW), Cloud Run, Cloud SQL (Postgres), Vertex AI, Secret Manager |
-| **Infrastructure** | Terraform, Docker, GitHub Actions |
+### Deep-Stack Integration
+| Layer | Technologies | Google Cloud Alignment |
+| :--- | :--- | :--- |
+| **Orchestration** | LangGraph, LangChain, Redis | Vertex AI Agentic Workflows |
+| **Storage** | PostgreSQL, BigQuery, GCS | Cloud SQL & BigQuery Warehouse |
+| **ML/AI** | PyTorch, XGBoost, Gemini 1.5 Pro | Vertex AI Model Garden & Training |
+| **Observability** | OpenTelemetry, Prometheus | Cloud Monitoring & Logging |
+| **Compute** | Docker, Cloud Run | Serverless Scalability |
 
 ---
 
-## 🛠 Core Components
+## 🛠 Features for the FDE Persona
 
-### 1. Multi-Agent System (LangGraph)
-We implement a **Hierarchical Planner-Executor** pattern:
-- **Planner:** Decomposes complex user queries into atomic steps.
-- **Knowledge Agent:** Performs multi-hop retrieval across Vector Stores and BigQuery.
-- **Action Agent:** Executes workflows (e.g., Jira ticket creation) via MCP tools.
-- **Critic:** Evaluates groundedness and safety before returning the final response.
+### 1. The "Blocker Remover" (Data Readiness)
+AgentBridge identifies why a customer *isn't* ready for AI. The Readiness Dashboard provides a scored assessment of schema health and metadata completeness, generating a roadmap for data remediation.
 
-### 2. Data Ingestion & Warehouse
-- **ETL Pipeline:** Handles incremental sync from Google Drive and GitHub.
-- **Embedding Pipeline:** Utilizes Vertex AI `text-embedding-004` with chunk versioning.
-- **BigQuery Warehouse:** Stores long-term traces, evaluations, and structured analytics for tenant-wide reporting.
+### 2. High-Performance Evaluation (Eval)
+A dedicated pipeline tracks **Groundedness**, **Safety**, and **Relevance** using LLM-as-a-judge patterns, allowing for historical benchmarking and regression testing of agentic prompts.
 
-### 3. Evaluation Framework
-AgentBridge doesn't just "talk"—it measures. We track:
-- **Groundedness:** Percentage of claims backed by retrieved context.
-- **Hallucination Rate:** Measured via LLM-as-a-judge comparison.
-- **Safety:** Content filtering and prompt injection detection.
+### 3. Cost & Latency Optimization
+Granular visibility into token consumption and TTFT allows FDEs to optimize for both end-user experience (latency) and organizational budget (cost-per-request).
 
 ---
 
 ## 📋 Getting Started
 
 ### Prerequisites
-- Google Cloud Project with Billing Enabled
-- Python 3.13+ & `uv`
-- Bun 1.1+
-- Terraform 1.5+
+- **Google Cloud Platform:** Project with Vertex AI, BigQuery, and Cloud Run APIs enabled.
+- **Runtime:** Python 3.13+ (`uv`), Bun 1.1+, Terraform 1.5+.
 
-### Local Development (Simulated)
-1. **Clone the Repo:**
+### Local Deployment (Production Simulation)
+1. **Clone & Setup:**
    ```bash
    git clone https://github.com/Jainam1673/AgentBridge.git
    cd AgentBridge
    ```
 
-2. **Backend Setup:**
+2. **Initialize Infrastructure (Dry-Run):**
    ```bash
-   cd backend
-   uv sync
-   uv run uvicorn src.main:app --reload
+   cd infra
+   terraform init
+   terraform plan -var="project_id=YOUR_PROJECT_ID"
    ```
 
-3. **Frontend Setup:**
+3. **Spin up Services:**
    ```bash
-   cd frontend
-   bun install
-   bun dev
+   docker-compose up --build
    ```
 
-4. **Seed Multi-Tenant Data:**
+4. **Seed Multi-Tenant Simulation:**
    ```bash
-   cd backend
-   uv run python src/seed.py
+   docker-compose exec backend python src/seed.py
    ```
-
----
-
-## 📂 Project Structure
-
-```text
-AgentBridge/
-├── backend/            # FastAPI & LangGraph core
-│   ├── src/agents/     # Multi-agent node definitions
-│   ├── src/ml/         # PyTorch/XGBoost models & pipelines
-│   └── src/mcp/        # Model Context Protocol servers
-├── frontend/           # Next.js 16 Dashboard
-│   ├── src/app/        # Dashboard pages (Overview, Readiness, Traces)
-│   └── src/components/ # Reusable shadcn/ui components
-├── infra/              # Terraform (HCL) modules for GCP
-├── data/               # Simulation data for Acme, Globex, & HealthCorp
-└── docs/               # Architecture Decision Records (ADRs)
-```
-
----
-
-## 🛡 Security & Compliance
-- **OAuth 2.0:** Integrated with Google Identity for secure user access.
-- **RBAC:** Fine-grained permissions (Admin, Manager, User) enforced at the API and Tool levels.
-- **Audit Logging:** Every agent action and tool execution is logged with user context for compliance.
-
----
-
-## 📈 Roadmap
-- [ ] GKE Deployment for high-availability agent clusters.
-- [ ] Support for fine-tuned Gemini models on tenant-specific datasets.
-- [ ] Real-time cost-per-session tracking in the dashboard.
 
 ---
 
 ## 👨‍💻 Author
 **Jainam** - [GitHub](https://github.com/Jainam1673)
 
-*Note: This project was built to demonstrate proficiency in architecting enterprise-grade GenAI systems on Google Cloud.*
+*This project is a definitive proof-of-competency for architecting enterprise-grade GenAI systems. It demonstrates the ability to not just build AI, but to deploy, secure, and operate it within the constraints of real-world enterprise infrastructure.*
