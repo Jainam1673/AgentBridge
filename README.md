@@ -14,10 +14,10 @@ AgentBridge is a production-grade, Google Cloud-native platform designed to brid
 ## 🚀 Key Value Propositions
 
 - **Multi-Agent Orchestration:** Specialized agents (Planner, Knowledge, Data, Action, Critic) coordinated via **LangGraph** to handle complex, non-linear workflows.
-- **Enterprise Connectivity:** Native MCP (Model Context Protocol) servers for secure, tool-based access to corporate data silos.
-- **AI Readiness Assessment:** A proprietary ML engine (XGBoost/Pandas) that evaluates data freshness, completeness, and metadata quality to score tenant readiness.
-- **Production-Grade ML:** Real-world classification models (PyTorch) for ticket routing and escalation priority prediction—not just wrappers.
-- **Observability & Tracing:** Full request lifecycle tracing using **OpenTelemetry**, exported to Google Cloud Trace/Logging.
+- **Production Hardening:** Advanced resiliency patterns including **Circuit Breakers** and **Exponential Backoff** retries for tool execution.
+- **Granular LLM Observability:** Real-time tracking of **Tokens/sec**, **TTFT (Time-to-First-Token)**, and **Token-based Cost Estimation**.
+- **Data Readiness Assessment:** A proprietary engine that identifies "data blockers" (schema integrity, metadata gaps) before AI deployment.
+- **Enterprise Connectivity:** Native **MCP (Model Context Protocol)** servers for secure, tool-based access to corporate data silos.
 
 ---
 
